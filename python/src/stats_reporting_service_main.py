@@ -2,28 +2,27 @@ import sys
 import zmq
 import json
 import time 
-from threading import Thread
+from threading import Thread, Lock
 
 class StatsReporter:
     def __init__(self):
         self.in_process: bool = True
-        self.detected_objs: dict[int, int] = {}
+        self.detected_objs: (int) = [0 for i in range(1000)]
         self.server_url:str = 'tcp://127.0.0.1:9901'
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.SUB)
         self.socket.connect(self.server_url)
         self.socket.setsockopt(zmq.SUBSCRIBE, b'')
+        self.mutex: Lock = Lock()
         self.stats_thread  = Thread(target=self.report_stats)
     
-    def print_stats(self, bfinal: bool) -> None:
-        if bfinal:
-            print(f'[stats] final stats:')
-        else:
-            print(f'[stats] In the past 10s:')
-        keys = list(self.detected_objs.keys())
-        keys.sort()
-        for key in keys:
-            print(f'[stats] class {key} detected {self.detected_objs[key]} times')
+    def print_stats(self) -> None:
+        print(f'[stats] In the past 10s:')
+        for idx, classnum in enumerate(self.detected_objs):
+            if classnum != 0:
+                print(f'[stats] class {idx} detected {classnum} times')
+        with self.mutex:
+            self.detected_objs = [0 for i in range(1000)]
 
     def report_stats(self) -> None:
         count: int = 0
@@ -32,8 +31,7 @@ class StatsReporter:
             count = count + 1
             if (count % 10) != 0:
                 continue
-            self.print_stats(False)
-        self.print_stats(True)
+            self.print_stats()
 
     def init(self) -> None:
         # use connect socket + 1
@@ -58,10 +56,8 @@ class StatsReporter:
                         break
                 elif "cat" in jsonmsg:
                     cat = int(jsonmsg["cat"])
-                    self.detected_objs[cat] = (
-                        1 if cat not in self.detected_objs 
-                        else (self.detected_objs[cat] + 1) 
-                    )
+                    with self.mutex:
+                        self.detected_objs[cat] = self.detected_objs[cat] + 1 
                     # print(f'{cat}: {self.detected_cats[cat]}, size: {len(self.detected_cats)}')
             except Exception as e:
                 print(e.stderr.decode(), file=sys.stderr)

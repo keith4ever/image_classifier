@@ -47,14 +47,12 @@ class ImageClassifier:
 
     def report_progress(self) -> None:
         previous_processed: int = 0
-
         while self.in_process:
             time.sleep(1)
             print(f'[classifier] throuput: {self.num_processed - previous_processed} images/sec')
             previous_processed = self.num_processed
 
     def classify_imgfile(self, image_file: str) -> str:
-        
         with Image.open(image_file) as img:
             img_np = np.copy(np.asarray(img))
             # shape: (360, 640, 3), dtype: uint8
