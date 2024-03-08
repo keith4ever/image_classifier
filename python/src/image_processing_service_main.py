@@ -49,7 +49,7 @@ class ImageClassifier:
         previous_processed: int = 0
         while self.in_process:
             time.sleep(1)
-            print(f'[classifier] throuput: {self.num_processed - previous_processed} images/sec')
+            print(f'[classifier] throughput: {self.num_processed - previous_processed} images/sec')
             previous_processed = self.num_processed
 
     def classify_imgfile(self, image_file: str) -> str:
