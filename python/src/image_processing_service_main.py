@@ -81,7 +81,6 @@ class ImageClassifier:
 
 
 def main() -> None:
-    global _in_process
     args = parse_args()
     core_count = os.cpu_count()
     image_files = glob.glob(f'{args.log_folder}/*.png')
