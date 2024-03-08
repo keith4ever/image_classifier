@@ -1,1 +1,1 @@
-cd python
+Refer to python/README.md 
