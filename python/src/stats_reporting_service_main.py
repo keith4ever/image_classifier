@@ -5,7 +5,7 @@ import time
 from threading import Thread, Lock
 
 class StatsReporter:
-    def __init__(self):
+    def __init__(self) -> None:
         self.in_process: bool = True
         self.detected_objs: (int) = [0 for i in range(1000)]
         self.server_url:str = 'tcp://127.0.0.1:9901'
@@ -45,7 +45,7 @@ class StatsReporter:
         s.recv()
         self.stats_thread.start()
 
-    def receiv_msg(self):
+    def receiv_msg(self) -> None:
         while True:
             try:
                 msg = str(self.socket.recv_pyobj())
@@ -63,7 +63,7 @@ class StatsReporter:
                 print(e.stderr.decode(), file=sys.stderr)
                 sys.exit(1)
 
-    def deinit(self):
+    def deinit(self) -> None:
         self.in_process = False    
         self.stats_thread.join()
 

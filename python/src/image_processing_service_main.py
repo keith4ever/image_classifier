@@ -18,7 +18,7 @@ def parse_args() -> argparse.Namespace:
 
 
 class ImageClassifier:
-    def __init__(self):
+    def __init__(self) -> None:
         self.in_process: bool = True
         self.num_processed: int = 0
         self.mutex: Lock = Lock()
@@ -43,7 +43,6 @@ class ImageClassifier:
 
         self.start_time = time.time()
         self.perf_thread.start()
-
 
     def report_progress(self) -> None:
         previous_processed: int = 0
