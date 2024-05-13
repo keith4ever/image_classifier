@@ -1,6 +1,3 @@
-## Tasks
-
-This is a short interview coding task at Coram.AI for the software engineer candidates. We expect good fits to be fluent in both Python and C++ coding. This task mostly focuses on Python. C++ will be tested in subsequent interviews.
 
 ## Setup
 
